@@ -41,7 +41,7 @@ struct Car
 int main()
 {
     // ****************************************
-    // Initialise
+   // Initialise
     srand(time(NULL));
     RenderWindow app(VideoMode(640, 480), "Car Racing Game!");
     app.setFramerateLimit(60);
@@ -55,6 +55,8 @@ int main()
     sCar.setOrigin(22, 22);
     float R = 22;
     const int N = 5;
+    const int WIDTH = 2880;
+    const int HEIGHT = 3648;
     Car car[N];
     Color colors[5] = { Color::Red, Color::Green, Color::Magenta, Color::Blue, Color::White };
 
@@ -139,10 +141,35 @@ int main()
         // Step 3: Render
         app.clear(Color::White);
         // TODO: Stay within the limit of the map.
+        for (int i = 0; i < N; i++)
+        {
+            if (car[i].x < 0 + sCar.getGlobalBounds().width / 2)
+                car[i].x = 0 + sCar.getGlobalBounds().width / 2;
+            if (car[i].x > sBackground.getGlobalBounds().width - sCar.getGlobalBounds().width / 2)
+                car[i].x = sBackground.getGlobalBounds().width - sCar.getGlobalBounds().width / 2;
+
+            if (car[i].y < 0 + sCar.getGlobalBounds().height / 2)
+                car[i].y = 0 + sCar.getGlobalBounds().height / 2;
+            if (car[i].y > sBackground.getGlobalBounds().height - sCar.getGlobalBounds().height / 2)
+                car[i].y = sBackground.getGlobalBounds().height - sCar.getGlobalBounds().height / 2;
+        }
         // TODO: Don't show white at bottom/right.
+        float backPosX, backPosY;
         if (car[0].x > 320) offsetX = car[0].x - 320;
         if (car[0].y > 240) offsetY = car[0].y - 240;
-        sBackground.setPosition(-offsetX, -offsetY);
+        backPosX = offsetX;
+        backPosY = offsetY;
+        if (car[0].x >= sBackground.getGlobalBounds().width - 320)
+        {
+            backPosX = static_cast<float>(sBackground.getGlobalBounds().width - 640);
+            offsetX = car[0].x - (320 + (car[0].x - (sBackground.getGlobalBounds().width - 320)));
+        }
+        if (car[0].y >= sBackground.getGlobalBounds().height - 240)
+        {
+            backPosY = static_cast<float>(sBackground.getGlobalBounds().height - 480);
+            offsetY = car[0].y - (240 + (car[0].y - (sBackground.getGlobalBounds().height - 240)));
+        }
+        sBackground.setPosition(-backPosX, -backPosY);
         app.draw(sBackground);
         for (int i = 0; i < N; i++)
         {
