@@ -1,49 +1,35 @@
-#include <SFML/Graphics.hpp>
+#include "accepter.h"
+#include "server.h"
+#include "queue.h"
+#include "list.h"
+#include "receiver.h"
+#include "util.h"
 #include <SFML/Network.hpp>
-
-#include <cmath>
 #include <iostream>
+#include <thread>
 
-using namespace sf;
 
-//const int num = 8; //checkpoints
-//// TODO: use checkpoint to make sure we are on the track.
-//// Slow speed when not on the track.
-//int points[num][2] = { 300, 610,
-//    1270,430,
-//    1380,2380,
-//    1900,2460,
-//    1970,1700,
-//    2550,1680,
-//    2560,3150,
-//    500, 3300 };
-//
-//struct Car
-//{
-//    float x, y, speed, angle; int n;
-//    Car() { speed = 2; angle = 0; n = 0; }
-//    void move()
-//    {
-//        x += sin(angle) * speed;
-//        y -= cos(angle) * speed;
-//    }
-//    void findTarget()
-//    {
-//        float tx = points[n][0];
-//        float ty = points[n][1];
-//        float beta = angle - atan2(tx - x, -ty + y);
-//        if (sin(beta) < 0) angle += 0.005 * speed; else angle -= 0.005 * speed;
-//        // Check if passed a checkpoint
-//        if ((x - tx) * (x - tx) + (y - ty) * (y - ty) < 25 * 25) n = (n + 1) % num; // TODO: simplify
-//    }
-//};
-
-//int main()
-//{
-//    return 0;
-//}
-
-int man()
+int Server::run()
 {
-	return 0;
+    Queue<std::string> queue;
+    List<std::shared_ptr<sf::TcpSocket>> sockets;
+    // TODO launch an accepter thread. DONE
+    Accepter accepter(queue, sockets);
+    std::thread accepterThread(&Accepter::operator(), &accepter);
+    while (1)
+    {
+        std::string s = queue.pop();
+        std::cout << "Main read: \"" << s << "\"\n";
+        // TODO send to all in sockets. Be careful to synchronise. DONE
+//        for(std::list<std::shared_ptr<sf::TcpSocket>>::iterator itr = sockets.begin(); itr != sockets.end(); ++itr)
+//        {
+//            sf::Socket::Status status = itr->send(s.c_str(), s.size());
+//        }
+        auto sendToOne = [&s](std::shared_ptr<sf::TcpSocket> socket) {
+            socket->send(s.c_str(), s.size() + 1);
+        };
+        sockets.for_each(sendToOne);
+    }
+    accepterThread.join();
+    return 0;
 }
