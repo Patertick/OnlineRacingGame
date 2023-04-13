@@ -147,11 +147,9 @@
   <ItemGroup>
     <ClCompile Include="accepter.cpp" />
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="ClientTemp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="receiver.cpp" />
     <ClCompile Include="server.cpp" />
-    <ClCompile Include="ServerTemp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="accepter.h" />
