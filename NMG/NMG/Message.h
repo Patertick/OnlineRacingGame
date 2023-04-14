@@ -1,13 +1,14 @@
+#pragma once
 #include<iostream>
 #include <SFML/Network.hpp>
 
 struct Message {
-	float posX;
-	float posY;
-	float speed;
-	float angle;
-	float acceleration;
-	int ID;
+	float posX{ 0 };
+	float posY{ 0 };
+	float speed{ 0 };
+	float angle{ 0 };
+	float acceleration{ 0 };
+	int ID{ -1 };
 
 	friend sf::Packet& operator << (sf::Packet& pOut, const Message& pMsg)
 	{

@@ -153,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="accepter.h" />
+    <ClInclude Include="Car.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="queue.h" />

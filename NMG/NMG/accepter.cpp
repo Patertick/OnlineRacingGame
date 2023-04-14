@@ -42,9 +42,10 @@ void Accepter::operator()()
             std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(socket, queue_);
             // TODO launch a thread to receive with the receiver DONE
             std::thread receiverThread(&Receiver::recv_loop, receiver);
-
             receiverThread.detach();
         }
+
     }
+
 }
 

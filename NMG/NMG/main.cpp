@@ -8,11 +8,8 @@ int main()
     Server server;
     Client client;
     std::thread serverMainThread(&Server::run, &server);
+    serverMainThread.detach();
     //std::thread serverMainThread(serverMain);
-    while (1)
-    {
-        client.run();
-    }
-    serverMainThread.join();
+    client.run();
     return 0;
 }

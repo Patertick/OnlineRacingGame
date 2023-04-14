@@ -22,6 +22,11 @@ public:
         list_.push_back(item);
     }
 
+    size_t Length()
+    {
+        return list_.size();
+    }
+
     List() = default;
     List(const List&) = delete;            // disable copying
     List& operator=(const List&) = delete; // disable assignment
