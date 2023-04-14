@@ -6,9 +6,10 @@
 #include <iostream>
 #include <sstream>
 #include <thread>
+#include "Message.h"
 
 Receiver::Receiver(std::shared_ptr<sf::TcpSocket> s,
-    Queue<std::string>& q) :
+    Queue<Message>& q) :
     socket_(s),
     queue_(q)
 {
@@ -24,16 +25,16 @@ void Receiver::recv_loop()
     }
     while (1)
     {
-        std::memset(buffer, 0, 256);
-        std::size_t received;
-        // TODO receive a message here DONE
-        sf::Socket::Status status = socket_->receive(buffer, 256, received);
+        sf::Packet packet;
+        Message msg;
+        sf::Socket::Status status = socket_->receive(packet);
         if (status == sf::Socket::Status::Done)
         {
+            packet >> msg;
             std::stringstream ss;
-            ss << "Received: \"" << buffer << "\", " << received << " bytes." << std::endl;
-            std::cout << ss.str();
+            ss << "Received: \"" << msg.posX << "\" from " << msg.ID << "." << std::endl;
+            //std::cout << ss.str();
         }
-        queue_.push(std::string(buffer));
+        queue_.push(msg);
     }
 }

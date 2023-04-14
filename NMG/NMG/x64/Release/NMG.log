@@ -1,1 +1,8 @@
-﻿
+﻿  receiver.cpp
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\receiver.cpp(20,10): warning C4101: 'buffer': unreferenced local variable
+  Generating code
+  3 of 533 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    4 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  NMG.vcxproj -> C:\Users\patri\source\MultiplayerRacingGame\NMG\x64\Release\NMG.exe

@@ -2,6 +2,7 @@
 #include "Client.h"
 #include "receiver.h"
 #include "util.h"
+#include "Message.h"
 #include <SFML/Network.hpp>
 #include <iostream>
 #include <thread>
@@ -13,6 +14,8 @@ using namespace sf;
 const int num = 8; //checkpoints
 // TODO: use checkpoint to make sure we are on the track.
 // Slow speed when not on the track.
+bool running = true;
+
 int points[num][2] = { 300, 610,
     1270,430,
     1380,2380,
@@ -39,6 +42,19 @@ struct Car
         if (sin(beta) < 0) angle += 0.005 * speed; else angle -= 0.005 * speed;
         // Check if passed a checkpoint
         if ((x - tx) * (x - tx) + (y - ty) * (y - ty) < 25 * 25) n = (n + 1) % num; // TODO: simplify
+    }
+    sf::Packet getPacket(float pAcceleration, int pID)
+    {
+        Message msg;
+        msg.posX = x;
+        msg.posY = y;
+        msg.speed = speed;
+        msg.angle = angle;
+        msg.acceleration = pAcceleration;
+        msg.ID = pID;
+        sf::Packet packet;
+        packet << msg;
+        return packet;
     }
 };
 
@@ -70,11 +86,11 @@ int Client::run()
 
     sf::Packet packet;
     std::cout << "UDP Connected\n";
-    Queue<std::string> queue;
+    Queue<Message> queue;
     // TODO launch a receiver thread to receive messages from the server. DONE
     std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(TCPsocket, queue);
     std::thread receiverThread(&Receiver::recv_loop, receiver);
-
+    receiverThread.detach();
     // UDP
 
 
@@ -92,7 +108,7 @@ int Client::run()
     sBackground.scale(2, 2);
     sCar.setOrigin(22, 22);
     float R = 22;
-    const int N = 5;
+    const int N = 1;
     const int WIDTH = 2880;
     const int HEIGHT = 3648;
     Car car[N];
@@ -112,7 +128,7 @@ int Client::run()
     int offsetX = 0, offsetY = 0;
 
 
-    while (1)
+    while (running)
     {/*
         packet << "UDP broadcast";
         UDPsocket.send(packet, sf::IpAddress::Broadcast, PORT);
@@ -122,11 +138,19 @@ int Client::run()
         std::string msg;
         packet >> msg;
         std::cout << msg << std::endl;*/
+
+        // receive data from server
+
+
+
         Event e;
         while (app.pollEvent(e))
         {
             if (e.type == Event::Closed)
+            {
                 app.close();
+                running = false;
+            }
         }
         // Step 1: user input
         bool Up = 0, Right = 0, Down = 0, Left = 0;
@@ -158,7 +182,10 @@ int Client::run()
         car[0].speed = speed;
         car[0].angle = angle;
         for (int i = 0; i < N; i++) car[i].move();
-        for (int i = 1; i < N; i++) car[i].findTarget();
+        if (N > 1)
+        {
+            for (int i = 1; i < N; i++) car[i].findTarget();
+        }
         //collision
         for (int i = 0; i < N; i++)
         {
@@ -222,7 +249,17 @@ int Client::run()
             app.draw(sCar);
         }
         app.display();
+
+
+        // send data to server
+        packet = car[0].getPacket(acc, 0);
+        status = TCPsocket->send(packet);
+        if (status != sf::Socket::Done)
+        {
+            std::cerr << "Data was not sent" << std::endl;
+            return 1;
+        }
+
     }
-    receiverThread.join();
     return 0;
 }

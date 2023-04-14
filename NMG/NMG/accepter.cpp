@@ -1,11 +1,13 @@
 #include "accepter.h"
 #include "receiver.h"
 #include "util.h"
+#include "Message.h"
 #include <iostream>
 #include <sstream>
 #include <thread>
 
-Accepter::Accepter(Queue<std::string>& q, List<std::shared_ptr<sf::TcpSocket>>& s) :
+
+Accepter::Accepter(Queue<Message>& q, List<std::shared_ptr<sf::TcpSocket>>& s) :
     queue_(q),
     socket_(s)
 {}
@@ -21,8 +23,9 @@ void Accepter::operator()()
         return;
     }
     std::cout << "Bound to port\n";
-    while (true)
+    while (1)
     {
+
         std::shared_ptr<sf::TcpSocket> socket = std::make_shared<sf::TcpSocket>();
         // TODO accept a connection on socket DONE
         status = listener.accept(*socket);
@@ -40,7 +43,7 @@ void Accepter::operator()()
             // TODO launch a thread to receive with the receiver DONE
             std::thread receiverThread(&Receiver::recv_loop, receiver);
 
-            receiverThread.join();
+            receiverThread.detach();
         }
     }
 }

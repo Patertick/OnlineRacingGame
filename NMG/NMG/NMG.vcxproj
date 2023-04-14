@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="accepter.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Message.h" />
     <ClInclude Include="queue.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="list.h" />
