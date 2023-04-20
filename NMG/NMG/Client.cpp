@@ -11,12 +11,35 @@
 using namespace sf;
 
 
+// define these functions to be used for checking checkpoints
+auto GreaterThan = [](int first, int second) {
+    if (first > second)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+};
+
+auto LessThan = [](int first, int second) {
+    if (first < second)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+};
+
 int Client::run()
 {
     // set up network connection
 
     // TCP
-
+    
     std::shared_ptr<sf::TcpSocket> TCPsocket = std::make_shared<sf::TcpSocket>();
     // auto connect = [&] { return socket->connect(sf::IpAddress::getLocalAddress(), PORT); };
     // net_run(connect, "connect");
@@ -61,7 +84,7 @@ int Client::run()
     sBackground.scale(2, 2);
     sCar.setOrigin(22, 22);
     float R = 22;
-    const int N = 5;
+    const int N = 1;
     const int WIDTH = 2880;
     const int HEIGHT = 3648;
     Car car[N];
@@ -157,6 +180,68 @@ int Client::run()
                 }
             }
         }
+
+        // check if we've passed a checkpoint
+        for (int i = 0; i < N; i++)
+        {
+            // X
+            if (car[i].nextCheckpoint == 0) // if checkpoint is 0 go from 8 to 0
+            {
+                if (points[num - 1][0] < points[car[i].nextCheckpoint][0]) // is next x less than previous checkpoint x
+                {
+                    // Y
+                    if (points[num - 1][1] < points[car[i].nextCheckpoint][1]) // is next y less than previous checkpoint y
+                    {
+                        car[i].findCheckpoint(GreaterThan, GreaterThan);
+                    }
+                    else if (points[num - 1][1] > points[car[i].nextCheckpoint][1]) // is next y greater than previous checkpoint y
+                    {
+                        car[i].findCheckpoint(GreaterThan, LessThan);
+                    }
+                }
+                else if (points[num - 1][0] > points[car[i].nextCheckpoint][0]) // is next x greater than previous checkpoint x
+                {
+                    // Y
+                    if (points[num - 1][1] < points[car[i].nextCheckpoint][1])
+                    {
+                        car[i].findCheckpoint(LessThan, GreaterThan);
+                    }
+                    else if (points[num - 1][1] > points[car[i].nextCheckpoint][1])
+                    {
+                        car[i].findCheckpoint(LessThan, LessThan);
+                    }
+                }
+            }
+            else
+            {
+                if (points[car[i].nextCheckpoint - 1][0] < points[car[i].nextCheckpoint][0]) // is next x less than previous checkpoint x
+                {
+                    // Y
+                    if (points[car[i].nextCheckpoint - 1][1] < points[car[i].nextCheckpoint][1]) // is next y less than previous checkpoint y
+                    {
+                        car[i].findCheckpoint(GreaterThan, GreaterThan);
+                    }
+                    else if (points[car[i].nextCheckpoint - 1][1] > points[car[i].nextCheckpoint][1]) // is next y greater than previous checkpoint y
+                    {
+                        car[i].findCheckpoint(GreaterThan, LessThan);
+                    }
+                }
+                else if (points[car[i].nextCheckpoint - 1][0] > points[car[i].nextCheckpoint][0]) // is next x greater than previous checkpoint x
+                {
+                    // Y
+                    if (points[car[i].nextCheckpoint - 1][1] < points[car[i].nextCheckpoint][1])
+                    {
+                        car[i].findCheckpoint(LessThan, GreaterThan);
+                    }
+                    else if (points[car[i].nextCheckpoint - 1][1] > points[car[i].nextCheckpoint][1])
+                    {
+                        car[i].findCheckpoint(LessThan, LessThan);
+                    }
+                }
+            }
+            
+        }
+
         // Step 3: Render
         app.clear(Color::White);
         // TODO: Stay within the limit of the map.
@@ -198,6 +283,7 @@ int Client::run()
             app.draw(sCar);
         }
         app.display();
+
 
 
         // send data to server
