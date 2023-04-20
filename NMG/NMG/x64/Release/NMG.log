@@ -1,25 +1,29 @@
 ﻿  Client.cpp
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(52,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(73,24): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(74,25): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(79,20): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(79,31): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(80,27): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(150,36): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Car.h(23,18): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Car.h(24,18): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Car.h(26,43): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Car.h(26,72): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(53,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(74,24): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(75,25): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(80,20): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(80,31): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(81,27): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(151,36): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(152,36): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(152,36): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
 C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(153,36): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(154,35): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(154,36): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
 C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(155,35): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(177,49): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(156,35): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(178,49): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(179,20): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(179,49): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(180,20): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(184,33): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(189,33): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(196,49): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(181,20): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(185,33): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(190,33): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\patri\source\MultiplayerRacingGame\NMG\NMG\Client.cpp(197,49): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Generating code
-  1 of 551 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+  1 of 553 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     4 functions had inline decision re-evaluated but remain unchanged
   Finished generating code

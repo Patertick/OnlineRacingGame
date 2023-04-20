@@ -10,10 +10,10 @@
 
 using namespace sf;
 
+
 int Client::run()
 {
     // set up network connection
-
 
     // TCP
 
@@ -131,10 +131,10 @@ int Client::run()
         car[ID].speed = speed;
         car[ID].angle = angle;
         for (int i = 0; i < N; i++) car[i].move();
-        /*if (N > 1)
+        if (N > 1)
         {
             for (int i = 1; i < N; i++) car[i].findTarget();
-        }*/
+        }
         //collision
         for (int i = 0; i < N; i++)
         {
@@ -217,17 +217,19 @@ int Client::run()
         for (int i = 0; i < N; i++)
         {
             Message msg = queue.pop();
-
-            sf::Packet packet;
-            packet << msg;
-            //std::cout << msg.ID << " Information Rec" << std::endl;
-            if (msg.ID != ID) // this situation shouldn't happen but for robustness check for same ID
+            if (msg.ID >= 0 && msg.ID <= N - 1) // only receive viable data
             {
-                car[msg.ID].x = msg.posX;
-                car[msg.ID].y = msg.posY;
-                car[msg.ID].speed = msg.speed;
-                car[msg.ID].angle = msg.angle;
-                acc = msg.acceleration;
+                sf::Packet packet;
+                packet << msg;
+                //std::cout << msg.ID << " Information Rec" << std::endl;
+                if (msg.ID != ID) // this situation shouldn't happen but for robustness check for same ID
+                {
+                    car[msg.ID].x = msg.posX;
+                    car[msg.ID].y = msg.posY;
+                    car[msg.ID].speed = msg.speed;
+                    car[msg.ID].angle = msg.angle;
+                    acc = msg.acceleration;
+                }
             }
         }
     }

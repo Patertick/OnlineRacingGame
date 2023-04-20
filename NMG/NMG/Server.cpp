@@ -130,24 +130,26 @@ int Server::run()
 
         
         
-        for (int i = 0; i < N; i++) // send information of all other cars (excluding the cars message that's just been received)
+        for (int i = 0; i < N; i++) // receive and send information to clients (excluding the car the client controls)
         {
             Message msg = queue.pop();
             //std::cout << "Main read: \"" << msg.posX << " from " << msg.ID << "\"\n";
+            if (msg.ID >= 0 && msg.ID <= N - 1) // only send viable data
+            {
+                sf::Packet packet;
+                packet << msg;
 
-            sf::Packet packet;
-            packet << msg;
-
-            // receive information of cars
-            car[msg.ID].x = msg.posX;
-            car[msg.ID].y = msg.posY;
-            car[msg.ID].speed = msg.speed;
-            car[msg.ID].angle = msg.angle;
-            acc = msg.acceleration;
-            auto sendToOne = [&packet](std::shared_ptr<sf::TcpSocket> socket) {
-                socket->send(packet);
-            };
-            sockets.for_each(sendToOne);
+                // receive information of cars
+                car[msg.ID].x = msg.posX;
+                car[msg.ID].y = msg.posY;
+                car[msg.ID].speed = msg.speed;
+                car[msg.ID].angle = msg.angle;
+                acc = msg.acceleration;
+                auto sendToOne = [&packet](std::shared_ptr<sf::TcpSocket> socket) {
+                    socket->send(packet);
+                };
+                sockets.for_each(sendToOne);
+            }
         }
 
         
