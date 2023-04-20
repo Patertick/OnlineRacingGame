@@ -84,7 +84,7 @@ int Client::run()
     sBackground.scale(2, 2);
     sCar.setOrigin(22, 22);
     float R = 22;
-    const int N = 1;
+    const int N = 5;
     const int WIDTH = 2880;
     const int HEIGHT = 3648;
     Car car[N];

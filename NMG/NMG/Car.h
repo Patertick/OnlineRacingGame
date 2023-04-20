@@ -45,7 +45,6 @@ struct Car
     }
     void findCheckpoint(std::function<bool(int, int)> fX, std::function<bool(int, int)> fY)
     {
-        
         if (fX(x, points[nextCheckpoint][0])) // have we passed the next checkpoint?
         {
             if (fY(y, points[nextCheckpoint][1]))

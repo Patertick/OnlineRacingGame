@@ -53,7 +53,7 @@ int Server::run()
     sBackground.scale(2, 2);
     sCar.setOrigin(22, 22);
     float R = 22;
-    const int N = 1;
+    const int N = 5;
     const int WIDTH = 2880;
     const int HEIGHT = 3648;
     Car car[N];
@@ -72,9 +72,15 @@ int Server::run()
     float turnSpeed = 0.08;
     int offsetX = 0, offsetY = 0;
     bool running = true;
+    int carFollow = 0;
+    bool canInput = true;
+
+    float deltaTime = clock();
+    float currTime;
     // GAME
     while (running)
     {
+        currTime = clock();
         Event e;
         while (app.pollEvent(e))
         {
@@ -83,6 +89,30 @@ int Server::run()
                 app.close();
                 running = false;
             }
+        }
+        // Step 1: user input
+        if (Keyboard::isKeyPressed(Keyboard::D) && canInput) {
+            carFollow++; 
+            canInput = false;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::A) && canInput) {
+            carFollow--; 
+            canInput = false;
+        }
+
+        if (currTime - deltaTime > 300)
+        {
+            deltaTime = currTime;
+            canInput = true;
+        }
+
+        if (carFollow < 0)
+        {
+            carFollow = 0;
+        }
+        if (carFollow >= N)
+        {
+            carFollow = N - 1;
         }
         // Step 3: Render
         app.clear(Color::White);
@@ -101,19 +131,19 @@ int Server::run()
         }
         // TODO: Don't show white at bottom/right.
         float backPosX, backPosY;
-        if (car[0].x > 320) offsetX = car[0].x - 320;
-        if (car[0].y > 240) offsetY = car[0].y - 240;
+        if (car[carFollow].x > 320) offsetX = car[carFollow].x - 320;
+        if (car[carFollow].y > 240) offsetY = car[carFollow].y - 240;
         backPosX = offsetX;
         backPosY = offsetY;
-        if (car[0].x >= sBackground.getGlobalBounds().width - 320)
+        if (car[carFollow].x >= sBackground.getGlobalBounds().width - 320)
         {
             backPosX = static_cast<float>(sBackground.getGlobalBounds().width - 640);
-            offsetX = car[0].x - (320 + (car[0].x - (sBackground.getGlobalBounds().width - 320)));
+            offsetX = car[carFollow].x - (320 + (car[carFollow].x - (sBackground.getGlobalBounds().width - 320)));
         }
-        if (car[0].y >= sBackground.getGlobalBounds().height - 240)
+        if (car[carFollow].y >= sBackground.getGlobalBounds().height - 240)
         {
             backPosY = static_cast<float>(sBackground.getGlobalBounds().height - 480);
-            offsetY = car[0].y - (240 + (car[0].y - (sBackground.getGlobalBounds().height - 240)));
+            offsetY = car[carFollow].y - (240 + (car[carFollow].y - (sBackground.getGlobalBounds().height - 240)));
         }
         sBackground.setPosition(-backPosX, -backPosY);
         app.draw(sBackground);
