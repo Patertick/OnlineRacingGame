@@ -42,7 +42,7 @@ int Server::run()
     // ****************************************
 // Initialise
     srand(time(NULL));
-    RenderWindow app(VideoMode(640, 480), "Car Racing Game!");
+    RenderWindow app(VideoMode(640, 480), "Server");
     app.setFramerateLimit(60);
     Texture t1, t2;
     t1.loadFromFile("images/background.png");
@@ -53,7 +53,7 @@ int Server::run()
     sBackground.scale(2, 2);
     sCar.setOrigin(22, 22);
     float R = 22;
-    const int N = 1;
+    const int N = 5;
     const int WIDTH = 2880;
     const int HEIGHT = 3648;
     Car car[N];
@@ -128,22 +128,27 @@ int Server::run()
 
 
 
-        Message msg = queue.pop();
-        std::cout << "Main read: \"" << msg.posX << " from " << msg.ID << "\"\n";
+        
+        
+        for (int i = 0; i < N; i++) // send information of all other cars (excluding the cars message that's just been received)
+        {
+            Message msg = queue.pop();
+            //std::cout << "Main read: \"" << msg.posX << " from " << msg.ID << "\"\n";
 
-        sf::Packet packet;
-        packet << msg;
+            sf::Packet packet;
+            packet << msg;
 
-        car[0].x = msg.posX;
-        car[0].y = msg.posY;
-        car[0].speed = msg.speed;
-        car[0].angle = msg.angle;
-        acc = msg.acceleration;
-
-        auto sendToOne = [&packet](std::shared_ptr<sf::TcpSocket> socket) {
-            socket->send(packet);
-        };
-        sockets.for_each(sendToOne);
+            // receive information of cars
+            car[msg.ID].x = msg.posX;
+            car[msg.ID].y = msg.posY;
+            car[msg.ID].speed = msg.speed;
+            car[msg.ID].angle = msg.angle;
+            acc = msg.acceleration;
+            auto sendToOne = [&packet](std::shared_ptr<sf::TcpSocket> socket) {
+                socket->send(packet);
+            };
+            sockets.for_each(sendToOne);
+        }
 
         
     }

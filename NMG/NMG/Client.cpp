@@ -45,9 +45,12 @@ int Client::run()
 
 
     // ****************************************
-   // Initialise
+    // Initialise
+
+    int ID = 0;
+
     srand(time(NULL));
-    RenderWindow app(VideoMode(640, 480), "Car Racing Game!");
+    RenderWindow app(VideoMode(640, 480), "Car Racing Game!" + std::to_string(ID));
     app.setFramerateLimit(60);
     Texture t1, t2;
     t1.loadFromFile("images/background.png");
@@ -58,7 +61,7 @@ int Client::run()
     sBackground.scale(2, 2);
     sCar.setOrigin(22, 22);
     float R = 22;
-    const int N = 1;
+    const int N = 5;
     const int WIDTH = 2880;
     const int HEIGHT = 3648;
     Car car[N];
@@ -76,8 +79,8 @@ int Client::run()
     float acc = 0.2, dec = 0.3;
     float turnSpeed = 0.08;
     int offsetX = 0, offsetY = 0;
-    // GAME
     bool running = true;
+    // GAME
     while (running)
     {/*
         packet << "UDP broadcast";
@@ -88,10 +91,6 @@ int Client::run()
         std::string msg;
         packet >> msg;
         std::cout << msg << std::endl;*/
-
-        // receive data from server
-
-
 
         Event e;
         while (app.pollEvent(e))
@@ -129,8 +128,8 @@ int Client::run()
         }
         if (Right && speed != 0)  angle += turnSpeed * speed / maxSpeed;
         if (Left && speed != 0)   angle -= turnSpeed * speed / maxSpeed;
-        car[0].speed = speed;
-        car[0].angle = angle;
+        car[ID].speed = speed;
+        car[ID].angle = angle;
         for (int i = 0; i < N; i++) car[i].move();
         /*if (N > 1)
         {
@@ -175,19 +174,19 @@ int Client::run()
         }
         // TODO: Don't show white at bottom/right.
         float backPosX, backPosY;
-        if (car[0].x > 320) offsetX = car[0].x - 320;
-        if (car[0].y > 240) offsetY = car[0].y - 240;
+        if (car[ID].x > 320) offsetX = car[0].x - 320;
+        if (car[ID].y > 240) offsetY = car[0].y - 240;
         backPosX = offsetX;
         backPosY = offsetY;
-        if (car[0].x >= sBackground.getGlobalBounds().width - 320)
+        if (car[ID].x >= sBackground.getGlobalBounds().width - 320)
         {
             backPosX = static_cast<float>(sBackground.getGlobalBounds().width - 640);
-            offsetX = car[0].x - (320 + (car[0].x - (sBackground.getGlobalBounds().width - 320)));
+            offsetX = car[ID].x - (320 + (car[ID].x - (sBackground.getGlobalBounds().width - 320)));
         }
-        if (car[0].y >= sBackground.getGlobalBounds().height - 240)
+        if (car[ID].y >= sBackground.getGlobalBounds().height - 240)
         {
             backPosY = static_cast<float>(sBackground.getGlobalBounds().height - 480);
-            offsetY = car[0].y - (240 + (car[0].y - (sBackground.getGlobalBounds().height - 240)));
+            offsetY = car[ID].y - (240 + (car[ID].y - (sBackground.getGlobalBounds().height - 240)));
         }
         sBackground.setPosition(-backPosX, -backPosY);
         app.draw(sBackground);
@@ -202,15 +201,35 @@ int Client::run()
 
 
         // send data to server
-        packet = car[0].getPacket(acc, 0);
-        status = TCPsocket->send(packet);
-        if (status != sf::Socket::Done)
+        for (int i = 0; i < N; i++)
         {
-            std::cerr << "Data was not sent" << std::endl;
-            receiverThread.join();
-            return 1;
+            packet = car[i].getPacket(acc, i);
+            status = TCPsocket->send(packet);
+            if (status != sf::Socket::Done)
+            {
+                std::cerr << "Data was not sent" << std::endl;
+                receiverThread.join();
+                return 1;
+            }
         }
 
+        // receive data from server
+        for (int i = 0; i < N; i++)
+        {
+            Message msg = queue.pop();
+
+            sf::Packet packet;
+            packet << msg;
+            //std::cout << msg.ID << " Information Rec" << std::endl;
+            if (msg.ID != ID) // this situation shouldn't happen but for robustness check for same ID
+            {
+                car[msg.ID].x = msg.posX;
+                car[msg.ID].y = msg.posY;
+                car[msg.ID].speed = msg.speed;
+                car[msg.ID].angle = msg.angle;
+                acc = msg.acceleration;
+            }
+        }
     }
 
     receiverThread.join();
