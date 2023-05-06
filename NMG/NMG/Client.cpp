@@ -1,5 +1,4 @@
 #include "queue.h"
-#include "Client.h"
 #include "receiver.h"
 #include "util.h"
 #include "Car.h"
@@ -9,7 +8,6 @@
 #include <cmath>
 
 using namespace sf;
-
 
 // define these functions to be used for checking checkpoints
 auto GreaterThan = [](int first, int second) {
@@ -34,12 +32,12 @@ auto LessThan = [](int first, int second) {
     }
 };
 
-int Client::run()
+int main()
 {
     // set up network connection
 
-    // TCP
-    
+   // TCP
+
     std::shared_ptr<sf::TcpSocket> TCPsocket = std::make_shared<sf::TcpSocket>();
     // auto connect = [&] { return socket->connect(sf::IpAddress::getLocalAddress(), PORT); };
     // net_run(connect, "connect");
@@ -51,13 +49,13 @@ int Client::run()
 
     // UDP
 
-    sf::UdpSocket UDPsocket;
-   
-    status = UDPsocket.bind(PORT);
+    //sf::UdpSocket UDPsocket;
 
-    if (status != sf::Socket::Done) {
-        return 1;
-    }
+    //status = UDPsocket.bind(PORT);
+
+    //if (status != sf::Socket::Done) {
+    //    return 1;
+    //}
 
     sf::Packet packet;
     std::cout << "UDP Connected\n";
@@ -69,8 +67,12 @@ int Client::run()
 
     // ****************************************
     // Initialise
-
-    int ID = 0;
+    int ID = -1;
+    while (ID < 0)
+    {
+        Message msg = queue.pop();
+        ID = msg.ID;
+    }
 
     srand(time(NULL));
     RenderWindow app(VideoMode(640, 480), "Car Racing Game!" + std::to_string(ID));
@@ -84,7 +86,7 @@ int Client::run()
     sBackground.scale(2, 2);
     sCar.setOrigin(22, 22);
     float R = 22;
-    const int N = 5;
+    const int N = 2;
     const int WIDTH = 2880;
     const int HEIGHT = 3648;
     Car car[N];
@@ -156,7 +158,10 @@ int Client::run()
         for (int i = 0; i < N; i++) car[i].move();
         if (N > 1)
         {
-            for (int i = 1; i < N; i++) car[i].findTarget();
+            //for (int i = 0; i < N; i++)
+            //{
+            //    if(i != ID) car[i].findTarget();
+            //}
         }
         //collision
         for (int i = 0; i < N; i++)
@@ -239,7 +244,7 @@ int Client::run()
                     }
                 }
             }
-            
+
         }
 
         // Step 3: Render
@@ -259,8 +264,8 @@ int Client::run()
         }
         // TODO: Don't show white at bottom/right.
         float backPosX, backPosY;
-        if (car[ID].x > 320) offsetX = car[0].x - 320;
-        if (car[ID].y > 240) offsetY = car[0].y - 240;
+        if (car[ID].x > 320) offsetX = car[ID].x - 320;
+        if (car[ID].y > 240) offsetY = car[ID].y - 240;
         backPosX = offsetX;
         backPosY = offsetY;
         if (car[ID].x >= sBackground.getGlobalBounds().width - 320)
@@ -287,16 +292,17 @@ int Client::run()
 
 
         // send data to server
-        for (int i = 0; i < N; i++)
+        //for (int i = 0; i < N; i++)
+        //{
+
+       // }
+        packet = car[ID].getPacket(acc, ID);
+        status = TCPsocket->send(packet);
+        if (status != sf::Socket::Done)
         {
-            packet = car[i].getPacket(acc, i);
-            status = TCPsocket->send(packet);
-            if (status != sf::Socket::Done)
-            {
-                std::cerr << "Data was not sent" << std::endl;
-                receiverThread.join();
-                return 1;
-            }
+            std::cerr << "Data was not sent" << std::endl;
+            receiverThread.join();
+            return 1;
         }
 
         // receive data from server

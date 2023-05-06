@@ -147,7 +147,6 @@
   <ItemGroup>
     <ClCompile Include="accepter.cpp" />
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="receiver.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
@@ -155,13 +154,11 @@
     <ClInclude Include="accepter.h" />
     <ClInclude Include="Car.h" />
     <ClInclude Include="Checkpoints.h" />
-    <ClInclude Include="Client.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="queue.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="list.h" />
     <ClInclude Include="receiver.h" />
-    <ClInclude Include="server.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

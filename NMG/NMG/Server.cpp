@@ -1,5 +1,4 @@
 #include "accepter.h"
-#include "server.h"
 #include "queue.h"
 #include "list.h"
 #include "receiver.h"
@@ -11,7 +10,7 @@
 
 using namespace sf;
 
-int Server::run()
+int main()
 {
     Queue<Message> queue;
     List<std::shared_ptr<sf::TcpSocket>> sockets;
@@ -22,7 +21,7 @@ int Server::run()
     bool startGame{ false };
     while (startGame == false)
     {
-        if (sockets.Length() > 0)
+        if (sockets.Length() > 1)
         {
             startGame = true;
         }
@@ -53,7 +52,7 @@ int Server::run()
     sBackground.scale(2, 2);
     sCar.setOrigin(22, 22);
     float R = 22;
-    const int N = 5;
+    const int N = 2;
     const int WIDTH = 2880;
     const int HEIGHT = 3648;
     Car car[N];
@@ -92,11 +91,11 @@ int Server::run()
         }
         // Step 1: user input
         if (Keyboard::isKeyPressed(Keyboard::D) && canInput) {
-            carFollow++; 
+            carFollow++;
             canInput = false;
         }
         if (Keyboard::isKeyPressed(Keyboard::A) && canInput) {
-            carFollow--; 
+            carFollow--;
             canInput = false;
         }
 
@@ -158,8 +157,8 @@ int Server::run()
 
 
 
-        
-        
+
+
         for (int i = 0; i < N; i++) // receive and send information to clients (excluding the car the client controls)
         {
             Message msg = queue.pop();
@@ -182,7 +181,7 @@ int Server::run()
             }
         }
 
-        
+
     }
 
     accepterThread.join();
