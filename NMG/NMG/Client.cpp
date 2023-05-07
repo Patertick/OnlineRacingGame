@@ -75,11 +75,13 @@ int Client::run()
     srand(time(NULL));
     RenderWindow app(VideoMode(640, 480), "Car Racing Game!" + std::to_string(ID));
     app.setFramerateLimit(60);
-    Texture t1, t2;
+    Texture t1, t2, t3;
     t1.loadFromFile("images/background.png");
     t2.loadFromFile("images/car.png");
+    t3.loadFromFile("images/green.png");
     t1.setSmooth(true);
     t2.setSmooth(true);
+    t3.setSmooth(true);
     Sprite sBackground(t1), sCar(t2);
     sBackground.scale(2, 2);
     sCar.setOrigin(22, 22);
@@ -88,7 +90,15 @@ int Client::run()
     const int WIDTH = 2880;
     const int HEIGHT = 3648;
     Car car[N];
+    Car carPlaces[N];
     Color colors[5] = { Color::Red, Color::Green, Color::Magenta, Color::Blue, Color::White };
+    /*Sprite sCheckpoints[8];
+    for (int i = 0; i < 8; i++)
+    {
+        sCheckpoints[i].setPosition(points[i][0], points[i][1]);
+        sCheckpoints[i].setTexture(t3);
+        sCheckpoints[i].setScale(0.25, 0.25);
+    }*/
 
     // Starting positions
     for (int i = 0; i < N; i++)
@@ -242,6 +252,40 @@ int Client::run()
             
         }
 
+        // update current placings via bubble sort
+
+        for (int i = 0; i < N; i++)
+        {
+            carPlaces[i] = car[i];
+        }
+
+        for (int i = 0; i < N; i++)
+        {
+            for (int j = 0; j < N; j++)
+            {
+                if (!carPlaces[j].finishedRace)
+                {
+                    if (carPlaces[j] > carPlaces[j + 1]) // is item larger than other item
+                    {
+                        Car tempItem = carPlaces[j];
+                        carPlaces[j] = carPlaces[j + 1];
+                        carPlaces[j + 1] = tempItem; // swap items
+                        carPlaces[j + 1].place = j + 1;
+                        carPlaces[j].place = j;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else // do not sort if finished race (keeps positions once race ends)
+                {
+                    continue;
+                }
+            }
+        }
+
+
         // Step 3: Render
         app.clear(Color::White);
         // TODO: Stay within the limit of the map.
@@ -282,6 +326,19 @@ int Client::run()
             sCar.setColor(colors[i]);
             app.draw(sCar);
         }
+        for (int i = 0; i < N; i++)
+        {
+            sCar.setPosition(550, carPlaces[i].place * 50 + 100);
+            sCar.setColor(colors[i]);
+            sCar.setRotation(0);
+            app.draw(sCar);
+        }
+
+        /*for (int i = 0; i < 8; i++)
+        {
+            sCheckpoints[i].setPosition(-backPosX + points[i][0], -backPosY + points[i][1]);
+            app.draw(sCheckpoints[i]);
+        }*/
         app.display();
 
 
